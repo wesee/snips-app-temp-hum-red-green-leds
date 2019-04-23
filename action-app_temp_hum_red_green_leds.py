@@ -65,14 +65,67 @@ class TempHumRedGreenLeds(object):
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(intent_message.site_id, joke_msg, "Joke_Tuto_APP")
 
+    def askTemperature_callback(self, hermes, intent_message):
+        # terminate the session first if not continue
+        hermes.publish_end_session(intent_message.session_id, "")
+        
+        # action code goes here...
+        print('[Received] intent: {}'.format(intent_message.intent.intent_name))
+        
+        temp = requests.get("http://192.168.2.233:8080/rest/items/exec_command_7b587029_output/state")
+
+        message = "The temperature is " + temp + " degree Celcius."
+
+        # if need to speak the execution result by tts
+        hermes.publish_start_session_notification(intent_message.site_id, message, "openHAB_APP")
+
+    def askHumidity_callback(self, hermes, intent_message):
+        # terminate the session first if not continue
+        hermes.publish_end_session(intent_message.session_id, "")
+        
+        # action code goes here...
+        print('[Received] intent: {}'.format(intent_message.intent.intent_name))
+        
+        hum = requests.get("http://192.168.2.233:8080/rest/items/exec_command_298d9701_output/state")
+
+        message = "The relative humidity is " + hum + " percent."
+
+        # if need to speak the execution result by tts
+        hermes.publish_start_session_notification(intent_message.site_id, message, "openHAB_APP")
+
+    def askLight_callback(self, hermes, intent_message, message):
+        # terminate the session first if not continue
+        hermes.publish_end_session(intent_message.session_id, "")
+        
+        # action code goes here...
+        print('[Received] intent: {}'.format(intent_message.intent.intent_name))
+        
+        # if need to speak the execution result by tts
+        hermes.publish_start_session_notification(intent_message.site_id, message, "openHAB_APP")
+
 
     # More callback function goes here...
 
     # --> Master callback function, triggered everytime an intent is recognized
     def master_intent_callback(self,hermes, intent_message):
         coming_intent = intent_message.intent.intent_name
-        if coming_intent == 'wesee:askJoke':
-            self.askJoke_callback(hermes, intent_message)
+        if coming_intent == 'wesee:red_light_on':
+            self.askLight_callback(hermes, intent_message, "Turning on red light.")
+
+        if coming_intent == 'wesee:red_light_off':
+            self.askLight_callback(hermes, intent_message, "Turning off red light.")
+
+        if coming_intent == 'wesee:green_light_on':
+            self.askLight_callback(hermes, intent_message, "Turning on green light.")
+
+        if coming_intent == 'wesee:green_light_off':
+            self.askLight_callback(hermes, intent_message, "Turning off green light.")
+
+        if coming_intent == 'wesee:ask_humidity':
+            self.askHumidity_callback(hermes, intent_message)
+
+        if coming_intent == 'wesee:ask_temperature':
+            self.askTemperature_callback(hermes, intent_message)
 
         # more callback and if condition goes here...
 
