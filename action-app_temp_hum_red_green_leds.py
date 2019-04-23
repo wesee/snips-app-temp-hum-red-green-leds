@@ -74,7 +74,7 @@ class TempHumRedGreenLeds(object):
         
         temp = requests.get("http://192.168.2.233:8080/rest/items/exec_command_7b587029_output/state")
 
-        message = "The temperature is " + temp + " degree Celcius."
+        message = "The temperature is " + temp.text + " degree Celcius."
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(intent_message.site_id, message, "openHAB_APP")
@@ -88,7 +88,7 @@ class TempHumRedGreenLeds(object):
         
         hum = requests.get("http://192.168.2.233:8080/rest/items/exec_command_298d9701_output/state")
 
-        message = "The relative humidity is " + hum + " percent."
+        message = "The relative humidity is " + hum.text + " percent."
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(intent_message.site_id, message, "openHAB_APP")
